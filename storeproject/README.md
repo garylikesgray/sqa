@@ -1,15 +1,13 @@
-# 🎀 Makeup Ecommerce Store - Complete Guide
 
-## ✅ What We Built
 
 A beautiful, simple makeup ecommerce web app with:
 - ✨ Homepage with welcome message
 - 🛍️ Product listing page (6 makeup products)
-- 🛒 Shopping cart (using Django sessions)
-- 💳 Checkout form
-- ✅ Order success page
+ Shopping cart (using Django sessions)
+ Checkout form
+ Order success page
 
-## 📁 Final Project Structure
+
 
 ```
 storeproject/
