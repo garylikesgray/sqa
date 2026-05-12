@@ -2,22 +2,41 @@
 
 {% block content %}
 <div class="success-message">
-    <h2>Order Confirmed</h2>
-    
+    <div class="success-icon">✓</div>
+    <h2>Order Confirmed!</h2>
+
+    {% if order %}
     <p style="margin: 20px 0; font-size: 16px;">
-        Thank you for your purchase, <strong>{{ order.name }}</strong>!
+        Thank you, <strong>{{ order.name }}</strong>! Your order <strong>#{{ order.id }}</strong> has been placed.
     </p>
-    
-    <div style="background-color: white; padding: 20px; border-radius: 4px; margin: 20px 0; text-align: left; display: inline-block;">
-        <p><strong>Order Details:</strong></p>
-        <p>Email: {{ order.email }}</p>
-        <p>Shipping Address: {{ order.address }}</p>
+
+    <div class="order-details-box">
+        <p><strong>Confirmation email:</strong> {{ order.email }}</p>
+        <p><strong>Shipping to:</strong> {{ order.address }}</p>
+        <p><strong>Order total:</strong> ${{ order.total_price }}</p>
+        <p><strong>Status:</strong> {{ order.get_status_display }}</p>
     </div>
-    
-    <p style="margin: 20px 0; color: #666;">
-        We'll send you a confirmation email shortly.
-    </p>
-    
-    <a href="{% url 'store:home' %}" class="btn">Back to Home</a>
+
+    {% if order.items.all %}
+    <div class="order-items-summary">
+        <h4>Items ordered:</h4>
+        {% for item in order.items.all %}
+        <div class="summary-item">
+            <span>{{ item.product_name }} × {{ item.quantity }}</span>
+            <span>${{ item.subtotal }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p style="margin: 20px 0;">Your order has been placed successfully.</p>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+        {% if user.is_authenticated %}
+        <a href="{% url 'store:profile' %}" class="btn" style="margin-right: 10px;">View My Orders</a>
+        {% endif %}
+        <a href="{% url 'store:products' %}" class="btn">Continue Shopping</a>
+    </div>
 </div>
 {% endblock %}

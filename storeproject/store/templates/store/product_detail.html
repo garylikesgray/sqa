@@ -1,0 +1,62 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-detail-image">
+        {% if product.image %}
+            <img src="{{ product.image }}" alt="{{ product.name }}">
+        {% else %}
+            <div class="product-image-placeholder large">No Image</div>
+        {% endif %}
+    </div>
+
+    <div class="product-detail-info">
+        {% if product.category %}
+        <div class="product-category-tag">{{ product.category.name }}</div>
+        {% endif %}
+        <h1>{{ product.name }}</h1>
+        <div class="product-detail-price">${{ product.price }}</div>
+        <p class="product-detail-description">{{ product.description }}</p>
+
+        {% if product.in_stock %}
+        <div class="stock-badge in-stock">In Stock ({{ product.stock }} available)</div>
+        <form method="POST" action="{% url 'store:add_to_cart' product.id %}">
+            {% csrf_token %}
+            <div class="quantity-selector">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="quantity-input">
+            </div>
+            <button type="submit" class="btn btn-large">Add to Cart</button>
+        </form>
+        {% else %}
+        <div class="stock-badge out-of-stock">Out of Stock</div>
+        <button class="btn btn-large btn-disabled" disabled>Out of Stock</button>
+        {% endif %}
+    </div>
+</div>
+
+{% if related %}
+<section style="margin-top: 60px;">
+    <h2>You might also like</h2>
+    <div class="products-grid">
+        {% for item in related %}
+        <div class="product-card">
+            <a href="{% url 'store:product_detail' item.id %}">
+                <div class="product-image-container">
+                    {% if item.image %}
+                        <img src="{{ item.image }}" alt="{{ item.name }}" class="product-image">
+                    {% else %}
+                        <div class="product-image-placeholder">No Image</div>
+                    {% endif %}
+                </div>
+            </a>
+            <div class="product-name">
+                <a href="{% url 'store:product_detail' item.id %}">{{ item.name }}</a>
+            </div>
+            <div class="product-price">${{ item.price }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

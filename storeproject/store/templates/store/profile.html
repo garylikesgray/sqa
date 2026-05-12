@@ -1,0 +1,43 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<h2>My Account</h2>
+
+<div class="profile-header">
+    <div>
+        <strong>{{ user.get_full_name|default:user.username }}</strong>
+        <p style="color: #666; margin-top: 4px;">{{ user.email }}</p>
+    </div>
+    <a href="{% url 'store:logout' %}" class="btn-remove">Sign Out</a>
+</div>
+
+<h3 style="margin: 40px 0 20px;">Order History</h3>
+
+{% if orders %}
+    {% for order in orders %}
+    <div class="order-card">
+        <div class="order-card-header">
+            <div>
+                <strong>Order #{{ order.id }}</strong>
+                <span style="color: #666; margin-left: 12px;">{{ order.created_at|date:"N j, Y" }}</span>
+            </div>
+            <div>
+                <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                <strong style="margin-left: 16px;">${{ order.total_price }}</strong>
+            </div>
+        </div>
+        <div class="order-card-items">
+            {% for item in order.items.all %}
+            <span class="order-item-tag">{{ item.product_name }} × {{ item.quantity }}</span>
+            {% endfor %}
+        </div>
+        <p style="color: #888; font-size: 14px; margin-top: 8px;">Ship to: {{ order.address }}</p>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-message">
+        <p>No orders yet.</p>
+        <a href="{% url 'store:products' %}" class="btn">Start Shopping</a>
+    </div>
+{% endif %}
+{% endblock %}

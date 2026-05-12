@@ -4,32 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }} - MakeUp ACCESSORIES By Sqabhobho </title>
+    <title>{{ page_title }} — MakeUp ACCESSORIES By Sqabhobho</title>
     <link rel="stylesheet" href="{% static 'store/style.css' %}">
 </head>
 <body>
-    <!-- ===== HEADER ===== -->
     <header>
         <div class="header-content">
-            <div class="logo">MakeUp ACCESSORIES By Sqabhobho</div>
+            <a href="{% url 'store:home' %}" class="logo">Sqabhobho</a>
+
+            <form class="search-form" action="{% url 'store:products' %}" method="GET">
+                <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}" class="search-input">
+                <button type="submit" class="search-btn">&#128269;</button>
+            </form>
+
             <nav>
-                <a href="{% url 'store:home' %}">Home</a>
                 <a href="{% url 'store:products' %}">Shop</a>
-                <a href="{% url 'store:cart' %}">Cart</a>
+                <a href="{% url 'store:cart' %}" class="cart-link">
+                    Cart
+                    {% with cart=request.session.cart %}
+                        {% if cart %}
+                            <span class="cart-badge">{{ cart.values|length }}</span>
+                        {% endif %}
+                    {% endwith %}
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'store:profile' %}">{{ user.first_name|default:user.username }}</a>
+                    <a href="{% url 'store:logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'store:login' %}">Sign In</a>
+                    <a href="{% url 'store:register' %}" class="btn-nav">Register</a>
+                {% endif %}
             </nav>
         </div>
     </header>
 
-    <!-- ===== MAIN CONTENT ===== -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message message-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <main class="container">
-        {% block content %}
-        <!-- Each page puts its own content here -->
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- ===== FOOTER ===== -->
-    <footer style="text-align: center; padding: 20px; color: #888; border-top: 1px solid #e8d5d5; margin-top: 40px;">
-        <p>&copy; 2024 Makeup Store. All rights reserved.</p>
+    <footer>
+        <p>&copy; 2024 MakeUp ACCESSORIES By Sqabhobho. All rights reserved.</p>
     </footer>
 </body>
 </html>
